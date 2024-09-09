@@ -41,6 +41,9 @@ metadata:
   labels:
     app: details
     service: details
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: bookinfo.public.sidus.dev
+    external-dns.alpha.kubernetes.io/ttl: "120"
 spec:
   ports:
   - port: 9080
