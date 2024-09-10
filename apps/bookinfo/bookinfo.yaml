@@ -74,9 +74,6 @@ metadata:
   labels:
     app: details
     service: details
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: bookinfo.public.sidus.dev
-    external-dns.alpha.kubernetes.io/ttl: "120"
 spec:
   ports:
   - port: 9080
@@ -128,9 +125,6 @@ metadata:
   labels:
     app: ratings
     service: ratings
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: bookinfo.public.sidus.dev
-    external-dns.alpha.kubernetes.io/ttl: "120"
 spec:
   ports:
   - port: 9080
@@ -182,9 +176,6 @@ metadata:
   labels:
     app: reviews
     service: reviews
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: bookinfo.public.sidus.dev
-    external-dns.alpha.kubernetes.io/ttl: "120"
 spec:
   ports:
   - port: 9080
@@ -329,9 +320,6 @@ metadata:
   labels:
     app: productpage
     service: productpage
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: bookinfo.public.sidus.dev
-    external-dns.alpha.kubernetes.io/ttl: "120"
 spec:
   ports:
   - port: 9080
