@@ -11,7 +11,6 @@ metadata:
   name: echo-1
   namespace: echoes
 spec:
-  type: LoadBalancer
   ports:
   - port: 8080
     name: high
@@ -75,7 +74,6 @@ metadata:
   name: echo-2
   namespace: echoes
 spec:
-  type: LoadBalancer
   ports:
   - port: 8090
     name: high
