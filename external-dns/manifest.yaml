@@ -105,9 +105,9 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "200m"
-          env:
-            - name: CF_API_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: cloudflare
-                  key: CLOUDFLARE_API_TOKEN
+        env:
+          - name: CF_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: cloudflare
+                key: CLOUDFLARE_API_TOKEN
