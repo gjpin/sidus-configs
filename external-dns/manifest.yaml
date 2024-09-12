@@ -1,0 +1,113 @@
+# Create namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external-dns
+---
+# Create secret
+apiVersion: secrets.infisical.com/v1alpha1
+kind: InfisicalSecret
+metadata:
+  name: cloudflare
+  namespace: infisical
+  labels:
+    origin: infisical
+spec:
+  hostAPI: https://app.infisical.com/api
+  authentication:
+    universalAuth:
+      secretsScope:
+        projectSlug: sidus-mvct
+        envSlug: dev
+        secretsPath: "/management/cloudflare"
+        recursive: false
+      credentialsRef:
+        secretName: universal-auth-credentials
+        secretNamespace: infisical
+  managedSecretReference:
+    secretName: cloudflare
+    secretNamespace: external-dns
+    creationPolicy: "Orphan"
+---
+# Create service account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: external-dns
+  namespace: external-dns
+---
+# Create cluster role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: external-dns
+rules:
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get","watch","list"]
+- apiGroups: ["gateway.networking.k8s.io"]
+  resources: ["gateways","httproutes","grpcroutes","tlsroutes","tcproutes","udproutes"] 
+  verbs: ["get","watch","list"]
+---
+# Create cluster role binding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: external-dns
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: external-dns
+subjects:
+- kind: ServiceAccount
+  name: external-dns
+  namespace: default
+---
+# Create deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns
+  namespace: external-dns
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: external-dns
+  template:
+    metadata:
+      labels:
+        app: external-dns
+    spec:
+      serviceAccountName: external-dns
+      containers:
+      - name: external-dns
+        image: registry.k8s.io/external-dns/external-dns:v0.15.0
+        args:
+        # Add desired Gateway API Route sources
+        - --source=gateway-httproute
+        - --source=gateway-grpcroute
+        - --source=gateway-tlsroute
+        - --source=gateway-tcproute
+        - --source=gateway-udproute
+        # Limit route endpoints to those Gateways in the given namespace
+        - --gateway-namespace=gateways
+        # Cloudflare specific flags
+        - --domain-filter=sidus.dev
+        - --provider=cloudflare
+        - --cloudflare-proxied
+        - --cloudflare-dns-records-per-page=5000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+          env:
+            - name: CF_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflare
+                  key: CLOUDFLARE_API_TOKEN

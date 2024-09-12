@@ -1,0 +1,170 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: echoes
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: echo-1
+  name: echo-1
+  namespace: echoes
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    name: high
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: echo-1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: echo-1
+  name: echo-1
+  namespace: echoes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo-1
+  template:
+    metadata:
+      labels:
+        app: echo-1
+    spec:
+      containers:
+      - image: gcr.io/kubernetes-e2e-test-images/echoserver:2.2
+        name: echo-1
+        ports:
+        - containerPort: 8080
+        env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: echo-2
+  name: echo-2
+  namespace: echoes
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8090
+    name: high
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: echo-2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: echo-2
+  name: echo-2
+  namespace: echoes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo-2
+  template:
+    metadata:
+      labels:
+        app: echo-2
+    spec:
+      containers:
+      - image: gcr.io/kubernetes-e2e-test-images/echoserver:2.2
+        name: echo-2
+        ports:
+        - containerPort: 8080
+        env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: echo-1
+  namespace: echoes
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: echo1.public.sidus.dev
+    external-dns.alpha.kubernetes.io/ttl: "120"
+spec:
+  parentRefs:
+  - name: public
+    namespace: gateways
+  hostnames:
+  - "echo1.public.sidus.dev"
+  rules:
+  - backendRefs:
+    - name: echo-1
+      port: 8080
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: echo-2
+  namespace: echoes
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: echo2.public.sidus.dev
+    external-dns.alpha.kubernetes.io/ttl: "120"
+spec:
+  parentRefs:
+  - name: public
+    namespace: gateways
+  hostnames:
+  - "echo2.public.sidus.dev"
+  rules:
+  - backendRefs:
+    - name: echo-2
+      port: 8090
