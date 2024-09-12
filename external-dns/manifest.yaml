@@ -4,31 +4,6 @@ kind: Namespace
 metadata:
   name: external-dns
 ---
-# Create secret
-apiVersion: secrets.infisical.com/v1alpha1
-kind: InfisicalSecret
-metadata:
-  name: cloudflare
-  namespace: infisical
-  labels:
-    origin: infisical
-spec:
-  hostAPI: https://app.infisical.com/api
-  authentication:
-    universalAuth:
-      secretsScope:
-        projectSlug: sidus-mvct
-        envSlug: dev
-        secretsPath: "/management/cloudflare"
-        recursive: false
-      credentialsRef:
-        secretName: universal-auth-credentials
-        secretNamespace: infisical
-  managedSecretReference:
-    secretName: cloudflare
-    secretNamespace: external-dns
-    creationPolicy: "Orphan"
----
 # Create service account
 apiVersion: v1
 kind: ServiceAccount
