@@ -89,10 +89,10 @@ spec:
         - --log-level=debug
         # Add desired Gateway API Route sources
         - --source=gateway-httproute
-        - --source=gateway-grpcroute
-        - --source=gateway-tlsroute
-        - --source=gateway-tcproute
-        - --source=gateway-udproute
+        # - --source=gateway-grpcroute
+        # - --source=gateway-tlsroute
+        # - --source=gateway-tcproute
+        # - --source=gateway-udproute
         # Limit route endpoints to those Gateways in the given namespace
         - --gateway-namespace=gateways
         # Cloudflare specific flags
