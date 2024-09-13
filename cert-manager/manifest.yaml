@@ -1,14 +1,15 @@
+# letsencrypt prod
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: letsencrypt-sidus-dev
+  name: letsencrypt-prod
   namespace: cilium-gateways
 spec:
   acme:
     email: letsencrypt@sidus.dev
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: letsencrypt-sidus-dev
+      name: letsencrypt-prod
     solvers:
     - dns01:
         cloudflare:
@@ -16,6 +17,45 @@ spec:
             name: cloudflare
             key: CLOUDFLARE_API_TOKEN
 ---
+# letsencrypt staging
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-staging
+  namespace: cilium-gateways
+spec:
+  acme:
+    email: letsencrypt@sidus.dev
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            name: cloudflare
+            key: CLOUDFLARE_API_TOKEN
+---
+# buypass
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: buypass
+  namespace: cilium-gateways
+spec:
+  acme:
+    email: buypass@sidus.dev
+    server: https://api.buypass.com/acme/directory
+    privateKeySecretRef:
+      name: buypass
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            name: cloudflare
+            key: CLOUDFLARE_API_TOKEN
+---
+# Certificate configuration
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -26,7 +66,7 @@ spec:
   duration: 2160h0m0s # 90d
   renewBefore: 360h0m0s # 15d
   issuerRef:
-    name: letsencrypt-sidus-dev
+    name: letsencrypt-prod
     kind: Issuer
   commonName: "*.sidus.dev"
   dnsNames:
