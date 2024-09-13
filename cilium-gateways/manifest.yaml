@@ -17,15 +17,15 @@ spec:
     allowedRoutes:
       namespaces:
         from: All
-  - name: https
+  - name: wildcard-sidus-dev-https
     protocol: HTTPS
     port: 443
     hostname: "*.sidus.dev"
+    allowedRoutes:
+      namespaces:
+        from: All
     tls:
       mode: Terminate
       certificateRefs:
       - kind: Secret
-        name: wildcard-example-io
-    allowedRoutes:
-      namespaces:
-        from: All
+        name: wildcard-sidus-dev

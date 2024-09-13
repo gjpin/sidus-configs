@@ -1,0 +1,33 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-sidus-dev
+  namespace: cilium-gateways
+spec:
+  acme:
+    email: letsencrypt@sidus.dev
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-sidus-dev
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            name: cloudflare
+            key: CLOUDFLARE_API_TOKEN
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-sidus-dev
+  namespace: cilium-gateways
+spec:
+  secretName: wildcard-sidus-dev
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  issuerRef:
+    name: letsencrypt-sidus-dev
+    kind: Issuer
+  commonName: "*.sidus.dev"
+  dnsNames:
+  - "*.sidus.dev"
