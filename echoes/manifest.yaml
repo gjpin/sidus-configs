@@ -139,8 +139,8 @@ metadata:
     external-dns.alpha.kubernetes.io/ttl: "120"
 spec:
   parentRefs:
-  - name: public
-    namespace: gateways
+  - name: wildcard-sidus-dev-https
+    namespace: cilium-gateways
   hostnames:
   - "echo1.public.sidus.dev"
   rules:
@@ -158,8 +158,8 @@ metadata:
     external-dns.alpha.kubernetes.io/ttl: "120"
 spec:
   parentRefs:
-  - name: public
-    namespace: gateways
+  - name: wildcard-sidus-dev-https
+    namespace: cilium-gateways
   hostnames:
   - "echo2.public.sidus.dev"
   rules:
