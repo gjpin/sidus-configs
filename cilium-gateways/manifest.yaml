@@ -8,6 +8,8 @@ kind: Gateway
 metadata:
   name: public
   namespace: cilium-gateways
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   gatewayClassName: cilium
   listeners:
