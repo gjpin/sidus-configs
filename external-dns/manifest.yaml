@@ -86,5 +86,5 @@ spec:
           - name: CF_API_TOKEN
             valueFrom:
               secretKeyRef:
-                name: cloudflare
+                name: cloudflare-sidus-dev
                 key: CLOUDFLARE_API_TOKEN

@@ -14,7 +14,7 @@ spec:
     - dns01:
         cloudflare:
           apiTokenSecretRef:
-            name: cloudflare
+            name: cloudflare-sidus-dev
             key: CLOUDFLARE_API_TOKEN
 ---
 # letsencrypt staging
@@ -33,7 +33,7 @@ spec:
     - dns01:
         cloudflare:
           apiTokenSecretRef:
-            name: cloudflare
+            name: cloudflare-sidus-dev
             key: CLOUDFLARE_API_TOKEN
 ---
 # buypass
@@ -52,7 +52,7 @@ spec:
     - dns01:
         cloudflare:
           apiTokenSecretRef:
-            name: cloudflare
+            name: cloudflare-sidus-dev
             key: CLOUDFLARE_API_TOKEN
 ---
 # Certificate configuration
